@@ -1,8 +1,8 @@
 package main
 
 import (
-	pb "github.com/EwanValentine/shippy-user-service/proto/auth"
 	"github.com/jinzhu/gorm"
+	pb "github.com/seidu626/abk-user-service/proto/auth"
 )
 
 type Repository interface {

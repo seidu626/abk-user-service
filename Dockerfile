@@ -1,6 +1,9 @@
 FROM golang:alpine as builder
 
-WORKDIR /go/src/github.com/EwanValentine/shippy-user-service
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
+
+WORKDIR /go/src/github.com/seidu626/abk-user-service
 
 COPY . .
 
@@ -14,6 +17,6 @@ RUN apk --no-cache add ca-certificates
 
 RUN mkdir /app
 WORKDIR /app
-COPY --from=builder /go/src/github.com/EwanValentine/shippy-user-service .
+COPY --from=builder /go/src/github.com/seidu626/abk-user-service .
 
 CMD ["./shippy-user-service"]
