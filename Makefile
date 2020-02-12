@@ -9,8 +9,7 @@ build:
 	$(call blue, "Working dir: ${WK_DIR} ..")
 	$(call blue, "Building:  ${IMG}")
 	@cd ${WK_DIR} && \
-	protoc -I/usr/local/include -I. \
-		--go_out=plugins=micro:. \
+	protoc --proto_path=. --micro_out=. --go_out=. \
 		proto/auth/auth.proto && \
 	docker build -t ${IMG} -f ${SOURCE} . && \
 	docker tag ${IMG} ${LATEST}

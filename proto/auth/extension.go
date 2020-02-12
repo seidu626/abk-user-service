@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"github.com/satori/go.uuid"
 	"github.com/jinzhu/gorm"
+	"github.com/satori/go.uuid"
 )
 
 // @TODO: not working for v1.13 github.com/satori/go.uuid
