@@ -1,0 +1,15 @@
+# @w3tec
+
+# Logs #
+/logs
+*.log
+*.log*
+
+
+# IDE #
+.idea/
+*.swp
+.awcache
+
+# Generated source-code #
+abk-user-service
