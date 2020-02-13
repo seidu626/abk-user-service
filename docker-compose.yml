@@ -1,0 +1,70 @@
+version: "3.7"
+
+services:
+  etcd: #https://github.com/micro/go-micro/issues/890
+    image: 'bitnami/etcd:latest'
+    container_name: "etcd"
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    ports:
+      - 2379:2379
+      - 2380:2380
+    networks:
+      - webnet
+
+  api:
+    image: microhq/micro
+    command: --registry=etcd --registry_address=etcd:2379 --register_interval=5 --register_ttl=10 --api_handler=rpc  --api_namespace=abk api --address=0.0.0.0:8080
+    ports:
+      - "8080:8080"
+    networks:
+      - webnet
+
+  user-service:
+    build: .
+    image: xper626/abk-user-service:latest
+    container_name: "user-service"
+    depends_on:
+      - db
+      - etcd
+    environment:
+      - DB_HOST=postgres://ussd_airflow:__password__@db:5432
+      - DB_USER=ussd_airflow
+      - DB_NAME=ussd_airflow
+      - DB_PASSWORD=__password__
+      - MICRO_SERVER_ADDRESS=:50051
+      # - MICRO_BROKER_ADDRESS=
+      - MICRO_REGISTRY=etcd
+      #- MICRO_REGISTRY=mdns
+      - MICRO_REGISTRY_ADDRESS=etcd:2379
+      - MICRO_ENABLE_STATS=true
+    ports:
+      - 50051:50051
+    networks:
+      - webnet
+
+  db:
+    image: postgres:alpine
+    restart: always
+    container_name: "postgres.service"
+    ports:
+      - "5432:5432"
+    networks:
+      - webnet
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - /home/xper626/repos/vumi_apps/src/postgresql/pg_data_init:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES=ussd_airflow,ussd_airflow,__password__; #db,owner,pass
+      - POSTGRES_PASSWORD=ser1gan
+
+volumes:
+  pg_data:
+
+networks:
+  # Network for your proxy server and application to connect them,
+  # do not use it for anything else!
+  proxynet:
+  # Network for your internals, use it by default:
+  webnet:
