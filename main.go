@@ -2,9 +2,13 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/micro/go-micro/v2"
-	k8s "github.com/micro/go-plugins/registry/kubernetes/v2"
+	"github.com/micro/go-micro/v2/registry"
+
+	//	k8s "github.com/micro/go-plugins/registry/kubernetes/v2"
+	etcdv3 "github.com/micro/go-plugins/registry/etcdv3/v2"
 	pb "github.com/seidu626/abk-user-service/proto/auth"
 )
 
@@ -27,22 +31,28 @@ func main() {
 
 	repo := &UserRepository{db}
 
-	registry := k8s.NewRegistry() //a default to using env vars for master API
+	etcdHost := os.Getenv("MICRO_REGISTRY_ADDRESS")
+	registry := etcdv3.NewRegistry(func(op *registry.Options) {
+		op.Addrs = []string{
+			etcdHost,
+		}
+	})
 
 	tokenService := &TokenService{repo}
 
 	// Create a new service. Optionally include some options here.
 	srv := micro.NewService(
-
-		// This name must match the package name given in your protobuf definition
-		micro.Name("abk.auth"),
-
 		// Set service registry
 		micro.Registry(registry),
+		// wrap the handler
+		micro.WrapHandler(logWrapper),
+		// This name must match the package name given in your protobuf definition
+		micro.Name("abk.auth"),
+		micro.Version("latest"),
 	)
 
 	// Init will parse the command line flags.
-	// srv.Init()
+	srv.Init()
 
 	// Will comment this out now to save having to run this locally
 	// publisher := micro.NewPublisher("user.created", srv.Client())

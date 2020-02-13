@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -10,16 +9,11 @@ import (
 
 func CreateConnection() (*gorm.DB, error) {
 	// Get database details from environment variables
+	// host := os.Getenv("DB_HOST")
+	// user := os.Getenv("DB_USER")
+	// DBName := os.Getenv("DB_NAME")
+	// password := os.Getenv("DB_PASSWORD")
 	host := os.Getenv("DB_HOST")
-	user := os.Getenv("DB_USER")
-	DBName := os.Getenv("DB_NAME")
-	password := os.Getenv("DB_PASSWORD")
 
-	return gorm.Open(
-		"postgres",
-		fmt.Sprintf(
-			"postgres://%s:%s@%s/%s?sslmode=disable",
-			user, password, host, DBName,
-		),
-	)
+	return gorm.Open("postgres", host+"?sslmode=disable")
 }

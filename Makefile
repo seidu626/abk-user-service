@@ -1,4 +1,5 @@
 NAME	:= xper626/abk-user-service
+SRV_NAME:= abk-user-service
 WK_DIR	:= .
 SOURCE	:= Dockerfile
 TAG		:= $$(git log -1 --pretty=%H)
@@ -20,13 +21,11 @@ push:
 
 run:
 	docker run --net="host" \
-		-p 50051 \
-		-e DB_HOST=localhost \
-		-e DB_PASS=password \
-		-e DB_USER=postgres \
+		-p 50053:50051 \
+		-e DB_HOST=postgres://ussd_airflow:__password__@172.19.0.2:5432 \
 		-e MICRO_SERVER_ADDRESS=:50051 \
 		-e MICRO_REGISTRY=mdns \
-		${NAME}
+		${LATEST}
 
 deploy:
 	sed "s/{{ UPDATED_AT }}/$(shell date)/g" ./deployments/deployment.tmpl > ./deployments/deployment.yml

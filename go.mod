@@ -7,6 +7,9 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/jinzhu/gorm v1.9.12
 	github.com/micro/go-micro/v2 v2.0.0
+	github.com/micro/go-plugins/registry/etcd/v2 v2.0.2
+	github.com/micro/go-plugins/registry/etcdv3 v0.0.0-20200119172437-4fe21aa238fd // indirect
+	github.com/micro/go-plugins/registry/etcdv3/v2 v2.0.2 // indirect
 	github.com/micro/go-plugins/registry/kubernetes/v2 v2.0.2
 	github.com/micro/protoc-gen-micro/v2 v2.0.0 // indirect
 	github.com/satori/go.uuid v1.2.0
